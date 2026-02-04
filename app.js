@@ -1,19 +1,23 @@
 const geourl = "https://geocoding-api.open-meteo.com/v1/search?";
 const city=document.querySelector("#name");
 const button=document.querySelector("#submit");
-
+let clockInterval;
 async function  getZone(){
+     clearInterval(clockInterval); // ⬅ STOP OLD CLOCK IMMEDIATELY
     const response = await fetch(
     geourl + "name=" + city.value + "&count=1"
   );
     let data=await response.json();
-   
+   if (!data.results || data.results.length === 0) {
+    alert("City not found");
+    return;
+  }
     console.log(data);
     const zone=data.results[0].timezone;
     startClock(zone);
  }
  function startClock(timeZone) {
-setInterval(() => {
+clockInterval=setInterval(() => {
     const date = new Date(
     new Date().toLocaleString("en-US", {timeZone})
   );
